@@ -1,0 +1,46 @@
+---
+title: "EDA"
+author: "Chris Hill"
+format: 
+  html:
+    toc: true
+    toc-title: "Contents"
+    toc-depth: 3
+editor: visual
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Click here for the Modeling Page](Modeling.html)

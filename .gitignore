@@ -51,3 +51,5 @@ rsconnect/
 # Docker image files
 *.tar
 *.tar.gz
+
+/.quarto/
