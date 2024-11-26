@@ -105,6 +105,13 @@ colSums(is.na(data))
 ```{r}
 numeric_cols <- names(data)[sapply(data, is.numeric)]
 
+numeric_summaries <- lapply(data[numeric_cols], summary)
+numeric_summaries
+```
+
+### Boxplots
+
+```{r}
 long_data <- data %>%
   select(Diabetes_binary, all_of(numeric_cols)) %>%
   pivot_longer(cols = all_of(numeric_cols), 
@@ -139,12 +146,13 @@ correlation_matrix
 
 ## Categorical Variables
 
+### Binary
+
 ```{r}
 bin_plots <- lapply(binary_vars, function(var) {
   ggplot(data, aes_string(x = var, fill = "Diabetes_binary")) +
     geom_bar(position = "fill") +
     labs(
-      title = paste(var),
       x = var,
       y = ""
     ) +
@@ -160,6 +168,8 @@ ggarrange(
   ncol = 5
 )
 ```
+
+### Ordered
 
 ```{r}
 ordered_vars <- names(data)[sapply(data, is.ordered)]
