@@ -30,60 +30,7 @@ set.seed(123)
 ```{r}
 #| label: data-processing
 
-data <- read.csv("diabetes_binary_health_indicators_BRFSS2015.csv")
-
-data$Diabetes_binary <- factor(data$Diabetes_binary, 
-                                levels = c(0, 1, 2), 
-                                labels = c("No Diabetes", "Prediabetes", 
-                                           "Diabetes"))
-
-binary_vars <- c("HighBP", "HighChol", "CholCheck", "Smoker", "Stroke", 
-                 "HeartDiseaseorAttack", "PhysActivity", "Fruits", "Veggies", 
-                 "HvyAlcoholConsump", "AnyHealthcare", "NoDocbcCost", 
-                 "DiffWalk", "Sex")
-data[binary_vars] <- lapply(data[binary_vars], factor, 
-                            levels = c(0, 1), 
-                            labels = c("No", "Yes"))
-
-data$GenHlth <- factor(data$GenHlth, 
-                       levels = 1:5, 
-                       labels = c("Excellent", "Very Good", "Good", "Fair", 
-                                  "Poor"), 
-                       ordered = TRUE)
-
-age_levels <- c("18-24", "25-29", "30-34", "35-39", "40-44", "45-49", 
-                "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", 
-                "80 or older")
-data$Age <- factor(data$Age, 
-                   levels = 1:13, 
-                   labels = age_levels, 
-                   ordered = TRUE)
-
-education_levels <- c("Never attended school or only kindergarten", 
-                      "Elementary", 
-                      "Some high school", 
-                      "High school graduate", 
-                      "Some college", 
-                      "College graduate")
-data$Education <- factor(data$Education, 
-                         levels = 1:6, 
-                         labels = education_levels, 
-                         ordered = TRUE)
-
-income_levels <- c("Less than $10,000", 
-                   "$10,000 to $15,000", 
-                   "$15,000 to $20,000", 
-                   "$20,000 to $25,000", 
-                   "$25,000 to $35,000", 
-                   "$35,000 to $50,000", 
-                   "$50,000 to $75,000", 
-                   "$75,000 or more")
-data$Income <- factor(data$Income, 
-                      levels = 1:8, 
-                      labels = income_levels, 
-                      ordered = TRUE)
-
-data$Diabetes_binary <- droplevels(data$Diabetes_binary)
+data <- readRDS("processed_data.rds")
 ```
 
 ## Data Splitting
@@ -174,6 +121,8 @@ tree_tuning <- tune_grid(
 
 ```{r}
 #| label: best-tree
+#| cache: true
+#| dependson: "tree-tuning"
 
 best_tree <- tree_tuning |>
   select_best(metric = "mn_log_loss")
@@ -231,6 +180,8 @@ rf_tuning <- tune_grid(
 
 ```{r}
 #| label: best-rf
+#| cache: true
+#| dependson: "rf-tuning"
 
 best_rf <- rf_tuning |>
   select_best(metric = "mn_log_loss")
@@ -269,6 +220,8 @@ bind_rows(
 
 ```{r}
 #| label: model-comparison
+#| cache: true
+#| dependson: ["best-tree", "best-rf"]
 
 tree_results <- final_tree_workflow |>
   last_fit(split, metrics = log_loss_metric) |>
@@ -288,6 +241,8 @@ list(
 
 ```{r}
 #| label: fit-full
+#| cache: true
+#| dependson: "best-rf"
 
 final_rf_model_full <- fit(final_rf_workflow, data = data)
 
