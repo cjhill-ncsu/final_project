@@ -1,8 +1,32 @@
-FROM rstudio/plumber
-RUN apt-get update -qq && apt-get install -y libssl-dev libcurl4-gnutls-dev libpng-dev
-libpng-dev pandoc
-RUN R -e "install.packages(c('GGally', 'leaflet', 'plumber'))"
-COPY myAPI.R myAPI.R
+# Use the official R base image
+FROM rocker/r-ver:4.3.1
+
+# Install system libraries required by R packages
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libv8-dev \
+    pandoc \
+    && apt-get clean
+
+# Install plumber and other R packages
+RUN install2.r --error \
+    plumber \
+    tidymodels \
+    ggplot2
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy project files to the container
+COPY API.R /app/API.R
+COPY runAPI.R /app/runAPI.R
+COPY processed_data.rds /app/processed_data.rds
+COPY final_rf_model.rds /app/final_rf_model.rds
+
+# Expose the port for the API
 EXPOSE 8000
-ENTRYPOINT ["R", "-e", \
-"pr <- plumber::plumb('myAPI.R'); pr$run(host='0.0.0.0', port=8000)"]
+
+# Run the API when the container starts
+CMD ["Rscript", "runAPI.R"]
