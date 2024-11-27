@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
 RUN install2.r --error \
     plumber \
     tidymodels \
-    ggplot2
+    ggplot2 \
+    ranger
 
 # Set the working directory in the container
 WORKDIR /app
