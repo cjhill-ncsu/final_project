@@ -57,7 +57,9 @@ function() {
                  truth = truth, 
                  estimate = prediction)
   
-  autoplot(cm, type = "heatmap")
+  p <- autoplot(cm, type = "heatmap")
+  
+  print(p)
 }
 #Query with: http://127.0.0.1:8000/confusion
 
@@ -71,3 +73,11 @@ function() {
   )
 }
 #Query with: http://127.0.0.1:8000/info
+
+
+#* Plot of iris data
+#* @serializer png
+#* @get /plotiris
+function(){
+  pairs(iris)
+}
