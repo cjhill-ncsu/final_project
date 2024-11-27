@@ -73,11 +73,3 @@ function() {
   )
 }
 #Query with: http://127.0.0.1:8000/info
-
-
-#* Plot of iris data
-#* @serializer png
-#* @get /plotiris
-function(){
-  pairs(iris)
-}
