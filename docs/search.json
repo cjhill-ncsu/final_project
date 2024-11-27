@@ -4,28 +4,28 @@
     "href": "EDA.html",
     "title": "EDA",
     "section": "",
-    "text": "library(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(ggpubr)"
+    "text": "library(tidyverse)\nlibrary(ggpubr)"
   },
   {
     "objectID": "EDA.html#factor-conversions",
     "href": "EDA.html#factor-conversions",
     "title": "EDA",
     "section": "Factor Conversions",
-    "text": "Factor Conversions\nNote: “MentHlth” and “PhysHlth” are counts of days\n\ndata$Diabetes_binary &lt;- factor(data$Diabetes_binary, \n                                levels = c(0, 1, 2), \n                                labels = c(\"No Diabetes\", \"Prediabetes\", \n                                           \"Diabetes\"))\n\ndata$Sex &lt;- factor(data$Sex,\n                   levels = c(0, 1),\n                   labels = c(\"Female\", \"Male\"))\n\nbinary_vars &lt;- c(\"HighBP\", \"HighChol\", \"CholCheck\", \"Smoker\", \"Stroke\", \n                 \"HeartDiseaseorAttack\", \"PhysActivity\", \"Fruits\", \"Veggies\", \n                 \"HvyAlcoholConsump\", \"AnyHealthcare\", \"NoDocbcCost\", \n                 \"DiffWalk\")\ndata[binary_vars] &lt;- lapply(data[binary_vars], factor, \n                            levels = c(0, 1), \n                            labels = c(\"No\", \"Yes\"))\n\ndata$GenHlth &lt;- factor(data$GenHlth, \n                       levels = 1:5, \n                       labels = c(\"Excellent\", \"Very Good\", \"Good\", \"Fair\", \n                                  \"Poor\"), \n                       ordered = TRUE)\n\nage_levels &lt;- c(\"18-24\", \"25-29\", \"30-34\", \"35-39\", \"40-44\", \"45-49\", \n                \"50-54\", \"55-59\", \"60-64\", \"65-69\", \"70-74\", \"75-79\", \n                \"80 or older\")\ndata$Age &lt;- factor(data$Age, \n                   levels = 1:13, \n                   labels = age_levels, \n                   ordered = TRUE)\n\neducation_levels &lt;- c(\"Never attended school or only kindergarten\", \n                      \"Elementary\", \n                      \"Some high school\", \n                      \"High school graduate\", \n                      \"Some college\", \n                      \"College graduate\")\ndata$Education &lt;- factor(data$Education, \n                         levels = 1:6, \n                         labels = education_levels, \n                         ordered = TRUE)\n\nincome_levels &lt;- c(\"Less than $10,000\", \n                   \"$10,000 to $15,000\", \n                   \"$15,000 to $20,000\", \n                   \"$20,000 to $25,000\", \n                   \"$25,000 to $35,000\", \n                   \"$35,000 to $50,000\", \n                   \"$50,000 to $75,000\", \n                   \"$75,000 or more\")\ndata$Income &lt;- factor(data$Income, \n                      levels = 1:8, \n                      labels = income_levels, \n                      ordered = TRUE)\n\nstr(data)\n\n'data.frame':   253680 obs. of  22 variables:\n $ Diabetes_binary     : Factor w/ 3 levels \"No Diabetes\",..: 1 1 1 1 1 1 1 1 2 1 ...\n $ HighBP              : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 2 2 2 2 2 2 1 ...\n $ HighChol            : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 1 2 2 1 2 2 1 ...\n $ CholCheck           : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 2 2 2 2 2 2 2 ...\n $ BMI                 : num  40 25 28 27 24 25 30 25 30 24 ...\n $ Smoker              : Factor w/ 2 levels \"No\",\"Yes\": 2 2 1 1 1 2 2 2 2 1 ...\n $ Stroke              : Factor w/ 2 levels \"No\",\"Yes\": 1 1 1 1 1 1 1 1 1 1 ...\n $ HeartDiseaseorAttack: Factor w/ 2 levels \"No\",\"Yes\": 1 1 1 1 1 1 1 1 2 1 ...\n $ PhysActivity        : Factor w/ 2 levels \"No\",\"Yes\": 1 2 1 2 2 2 1 2 1 1 ...\n $ Fruits              : Factor w/ 2 levels \"No\",\"Yes\": 1 1 2 2 2 2 1 1 2 1 ...\n $ Veggies             : Factor w/ 2 levels \"No\",\"Yes\": 2 1 1 2 2 2 1 2 2 2 ...\n $ HvyAlcoholConsump   : Factor w/ 2 levels \"No\",\"Yes\": 1 1 1 1 1 1 1 1 1 1 ...\n $ AnyHealthcare       : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 2 2 2 2 2 2 2 ...\n $ NoDocbcCost         : Factor w/ 2 levels \"No\",\"Yes\": 1 2 2 1 1 1 1 1 1 1 ...\n $ GenHlth             : Ord.factor w/ 5 levels \"Excellent\"&lt;\"Very Good\"&lt;..: 5 3 5 2 2 2 3 3 5 2 ...\n $ MentHlth            : num  18 0 30 0 3 0 0 0 30 0 ...\n $ PhysHlth            : num  15 0 30 0 0 2 14 0 30 0 ...\n $ DiffWalk            : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 1 1 1 1 2 2 1 ...\n $ Sex                 : Factor w/ 2 levels \"Female\",\"Male\": 1 1 1 1 1 2 1 1 1 2 ...\n $ Age                 : Ord.factor w/ 13 levels \"18-24\"&lt;\"25-29\"&lt;..: 9 7 9 11 11 10 9 11 9 8 ...\n $ Education           : Ord.factor w/ 6 levels \"Never attended school or only kindergarten\"&lt;..: 4 6 4 3 5 6 6 4 5 4 ...\n $ Income              : Ord.factor w/ 8 levels \"Less than $10,000\"&lt;..: 3 1 8 6 4 8 7 4 1 3 ..."
+    "text": "Factor Conversions\n\nBinary variables are converted into factor levels “Yes” and “No.”. Sex was given the labels “Male” and “Female”\nVariables GenHlth, Age, Education, and Income are ordered factors.\nThe Diabetes_binary response variable was converted into a factor of “No Diabetes” and “Prediabetes.”\n\n\ndata$Diabetes_binary &lt;- factor(data$Diabetes_binary, \n                                levels = c(0, 1, 2), \n                                labels = c(\"No Diabetes\", \"Prediabetes\", \n                                           \"Diabetes\"))\n\ndata$Sex &lt;- factor(data$Sex,\n                   levels = c(0, 1),\n                   labels = c(\"Female\", \"Male\"))\n\nbinary_vars &lt;- c(\"HighBP\", \"HighChol\", \"CholCheck\", \"Smoker\", \"Stroke\", \n                 \"HeartDiseaseorAttack\", \"PhysActivity\", \"Fruits\", \"Veggies\", \n                 \"HvyAlcoholConsump\", \"AnyHealthcare\", \"NoDocbcCost\", \n                 \"DiffWalk\")\ndata[binary_vars] &lt;- lapply(data[binary_vars], factor, \n                            levels = c(0, 1), \n                            labels = c(\"No\", \"Yes\"))\n\ndata$GenHlth &lt;- factor(data$GenHlth, \n                       levels = 1:5, \n                       labels = c(\"Excellent\", \"Very Good\", \"Good\", \"Fair\", \n                                  \"Poor\"), \n                       ordered = TRUE)\n\nage_levels &lt;- c(\"18-24\", \"25-29\", \"30-34\", \"35-39\", \"40-44\", \"45-49\", \n                \"50-54\", \"55-59\", \"60-64\", \"65-69\", \"70-74\", \"75-79\", \n                \"80 or older\")\ndata$Age &lt;- factor(data$Age, \n                   levels = 1:13, \n                   labels = age_levels, \n                   ordered = TRUE)\n\neducation_levels &lt;- c(\"Never attended school or only kindergarten\", \n                      \"Elementary\", \n                      \"Some high school\", \n                      \"High school graduate\", \n                      \"Some college\", \n                      \"College graduate\")\ndata$Education &lt;- factor(data$Education, \n                         levels = 1:6, \n                         labels = education_levels, \n                         ordered = TRUE)\n\nincome_levels &lt;- c(\"Less than $10000\", \n                   \"$10,000 to $15,000\", \n                   \"$15,000 to $20,000\", \n                   \"$20,000 to $25,000\", \n                   \"$25,000 to $35,000\", \n                   \"$35,000 to $50,000\", \n                   \"$50,000 to $75,000\", \n                   \"$75,000 or more\")\ndata$Income &lt;- factor(data$Income, \n                      levels = 1:8, \n                      labels = income_levels, \n                      ordered = TRUE)\n\nstr(data)\n\n'data.frame':   253680 obs. of  22 variables:\n $ Diabetes_binary     : Factor w/ 3 levels \"No Diabetes\",..: 1 1 1 1 1 1 1 1 2 1 ...\n $ HighBP              : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 2 2 2 2 2 2 1 ...\n $ HighChol            : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 1 2 2 1 2 2 1 ...\n $ CholCheck           : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 2 2 2 2 2 2 2 ...\n $ BMI                 : num  40 25 28 27 24 25 30 25 30 24 ...\n $ Smoker              : Factor w/ 2 levels \"No\",\"Yes\": 2 2 1 1 1 2 2 2 2 1 ...\n $ Stroke              : Factor w/ 2 levels \"No\",\"Yes\": 1 1 1 1 1 1 1 1 1 1 ...\n $ HeartDiseaseorAttack: Factor w/ 2 levels \"No\",\"Yes\": 1 1 1 1 1 1 1 1 2 1 ...\n $ PhysActivity        : Factor w/ 2 levels \"No\",\"Yes\": 1 2 1 2 2 2 1 2 1 1 ...\n $ Fruits              : Factor w/ 2 levels \"No\",\"Yes\": 1 1 2 2 2 2 1 1 2 1 ...\n $ Veggies             : Factor w/ 2 levels \"No\",\"Yes\": 2 1 1 2 2 2 1 2 2 2 ...\n $ HvyAlcoholConsump   : Factor w/ 2 levels \"No\",\"Yes\": 1 1 1 1 1 1 1 1 1 1 ...\n $ AnyHealthcare       : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 2 2 2 2 2 2 2 ...\n $ NoDocbcCost         : Factor w/ 2 levels \"No\",\"Yes\": 1 2 2 1 1 1 1 1 1 1 ...\n $ GenHlth             : Ord.factor w/ 5 levels \"Excellent\"&lt;\"Very Good\"&lt;..: 5 3 5 2 2 2 3 3 5 2 ...\n $ MentHlth            : num  18 0 30 0 3 0 0 0 30 0 ...\n $ PhysHlth            : num  15 0 30 0 0 2 14 0 30 0 ...\n $ DiffWalk            : Factor w/ 2 levels \"No\",\"Yes\": 2 1 2 1 1 1 1 2 2 1 ...\n $ Sex                 : Factor w/ 2 levels \"Female\",\"Male\": 1 1 1 1 1 2 1 1 1 2 ...\n $ Age                 : Ord.factor w/ 13 levels \"18-24\"&lt;\"25-29\"&lt;..: 9 7 9 11 11 10 9 11 9 8 ...\n $ Education           : Ord.factor w/ 6 levels \"Never attended school or only kindergarten\"&lt;..: 4 6 4 3 5 6 6 4 5 4 ...\n $ Income              : Ord.factor w/ 8 levels \"Less than $10000\"&lt;..: 3 1 8 6 4 8 7 4 1 3 ..."
   },
   {
     "objectID": "EDA.html#response-variable",
     "href": "EDA.html#response-variable",
     "title": "EDA",
     "section": "Response Variable",
-    "text": "Response Variable\n\ntable(data$Diabetes_binary)\n\n\nNo Diabetes Prediabetes    Diabetes \n     218334       35346           0 \n\ndata$Diabetes_binary &lt;- droplevels(data$Diabetes_binary)\ntable(data$Diabetes_binary)\n\n\nNo Diabetes Prediabetes \n     218334       35346"
+    "text": "Response Variable\n\nDropping unused factor level in Diabetes_binary\n\n\ntable(data$Diabetes_binary)\n\n\nNo Diabetes Prediabetes    Diabetes \n     218334       35346           0 \n\ndata$Diabetes_binary &lt;- droplevels(data$Diabetes_binary)\ntable(data$Diabetes_binary)\n\n\nNo Diabetes Prediabetes \n     218334       35346"
   },
   {
     "objectID": "EDA.html#missingness",
     "href": "EDA.html#missingness",
     "title": "EDA",
     "section": "Missingness",
-    "text": "Missingness\n\ncolSums(is.na(data))\n\n     Diabetes_binary               HighBP             HighChol \n                   0                    0                    0 \n           CholCheck                  BMI               Smoker \n                   0                    0                    0 \n              Stroke HeartDiseaseorAttack         PhysActivity \n                   0                    0                    0 \n              Fruits              Veggies    HvyAlcoholConsump \n                   0                    0                    0 \n       AnyHealthcare          NoDocbcCost              GenHlth \n                   0                    0                    0 \n            MentHlth             PhysHlth             DiffWalk \n                   0                    0                    0 \n                 Sex                  Age            Education \n                   0                    0                    0 \n              Income \n                   0"
+    "text": "Missingness\nThere are no missing values.\n\ncolSums(is.na(data))\n\n     Diabetes_binary               HighBP             HighChol \n                   0                    0                    0 \n           CholCheck                  BMI               Smoker \n                   0                    0                    0 \n              Stroke HeartDiseaseorAttack         PhysActivity \n                   0                    0                    0 \n              Fruits              Veggies    HvyAlcoholConsump \n                   0                    0                    0 \n       AnyHealthcare          NoDocbcCost              GenHlth \n                   0                    0                    0 \n            MentHlth             PhysHlth             DiffWalk \n                   0                    0                    0 \n                 Sex                  Age            Education \n                   0                    0                    0 \n              Income \n                   0"
   },
   {
     "objectID": "EDA.html#numeric-variables",
@@ -39,14 +39,14 @@
     "href": "EDA.html#categorical-variables",
     "title": "EDA",
     "section": "Categorical Variables",
-    "text": "Categorical Variables\n\nBinary\n\nbin_plots &lt;- lapply(binary_vars, function(var) {\n  ggplot(data, aes_string(x = var, fill = \"Diabetes_binary\")) +\n    geom_bar(position = \"fill\") +\n    labs(\n      x = var,\n      y = \"\"\n    ) +\n    theme_minimal() +\n    theme(\n      axis.text.x = element_text(angle = 45, hjust = 1),\n      legend.position = \"none\" \n    )\n})\n\nWarning: `aes_string()` was deprecated in ggplot2 3.0.0.\nℹ Please use tidy evaluation idioms with `aes()`.\nℹ See also `vignette(\"ggplot2-in-packages\")` for more information.\n\nggarrange(\n  plotlist = bin_plots,\n  ncol = 5\n)\n\n$`1`\n\n\n\n\n\n\n\n\n\n\n$`2`\n\n\n\n\n\n\n\n\n\n\n$`3`\n\n\n\n\n\n\n\n\n\n\nattr(,\"class\")\n[1] \"list\"      \"ggarrange\"\n\n\n\n\nOrdered\n\nordered_vars &lt;- names(data)[sapply(data, is.ordered)]\n\nord_plots &lt;- lapply(ordered_vars, function(var) {\n  ggplot(data, aes_string(x = var, fill = \"Diabetes_binary\")) +\n    geom_bar(position = \"fill\") +\n    labs(\n      title = paste(var),\n      x = var,\n      y = \"\"\n    ) +\n    theme_minimal() +\n    theme(\n      axis.text.x = element_text(angle = 45, hjust = 1),\n      legend.position = \"none\" \n    )\n})\n\nggarrange(\n  plotlist = ord_plots,\n  ncol = 2\n)\n\n$`1`\n\n\n\n\n\n\n\n\n\n\n$`2`\n\n\n\n\n\n\n\n\n\n\nattr(,\"class\")\n[1] \"list\"      \"ggarrange\""
+    "text": "Categorical Variables\nStacked bars with proportional fills. This makes it easy to compare the prevalence of diabetes status across different levels of each category.\n\nBinary\n\nbin_plots &lt;- lapply(binary_vars, function(var) {\n  ggplot(data, aes(x = .data[[var]], fill = Diabetes_binary)) +\n    geom_bar(position = \"fill\") +\n    labs(\n      x = var,\n      y = \"\"\n    ) +\n    theme_minimal() +\n    theme(\n      axis.text.x = element_text(angle = 45, hjust = 1),\n      legend.position = \"none\" \n    )\n})\n\nggarrange(\n  plotlist = bin_plots,\n  ncol = 5\n)\n\n$`1`\n\n\n\n\n\n\n\n\n\n\n$`2`\n\n\n\n\n\n\n\n\n\n\n$`3`\n\n\n\n\n\n\n\n\n\n\nattr(,\"class\")\n[1] \"list\"      \"ggarrange\"\n\n\n\n\nOrdered\n\nordered_vars &lt;- names(data)[sapply(data, is.ordered)]\n\nord_plots &lt;- lapply(ordered_vars, function(var) {\n  ggplot(data, aes(x = .data[[var]], fill = Diabetes_binary)) +\n    geom_bar(position = \"fill\") +\n    labs(\n      title = var,\n      x = var,\n      y = \"\"\n    ) +\n    theme_minimal() +\n    theme(\n      axis.text.x = element_text(angle = 45, hjust = 1),\n      legend.position = \"none\" \n    )\n})\n\nggarrange(\n  plotlist = ord_plots,\n  ncol = 2\n)\n\n$`1`\n\n\n\n\n\n\n\n\n\n\n$`2`\n\n\n\n\n\n\n\n\n\n\nattr(,\"class\")\n[1] \"list\"      \"ggarrange\""
   },
   {
     "objectID": "Modeling.html",
     "href": "Modeling.html",
     "title": "Modeling",
     "section": "",
-    "text": "library(tidymodels)\n\n── Attaching packages ────────────────────────────────────── tidymodels 1.2.0 ──\n\n\n✔ broom        1.0.7     ✔ recipes      1.1.0\n✔ dials        1.3.0     ✔ rsample      1.2.1\n✔ dplyr        1.1.4     ✔ tibble       3.2.1\n✔ ggplot2      3.5.1     ✔ tidyr        1.3.1\n✔ infer        1.0.7     ✔ tune         1.2.1\n✔ modeldata    1.4.0     ✔ workflows    1.1.4\n✔ parsnip      1.2.1     ✔ workflowsets 1.1.0\n✔ purrr        1.0.2     ✔ yardstick    1.3.1\n\n\n── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──\n✖ purrr::discard() masks scales::discard()\n✖ dplyr::filter()  masks stats::filter()\n✖ dplyr::lag()     masks stats::lag()\n✖ recipes::step()  masks stats::step()\n• Use tidymodels_prefer() to resolve common conflicts.\n\nlibrary(doFuture)\n\nLoading required package: foreach\n\n\n\nAttaching package: 'foreach'\n\n\nThe following objects are masked from 'package:purrr':\n\n    accumulate, when\n\n\nLoading required package: future\n\nregisterDoFuture()\nplan(multisession)\n\nset.seed(123)"
+    "text": "library(tidymodels)\nlibrary(doFuture)\n\nregisterDoFuture()\nplan(multisession)\n\nset.seed(123)"
   },
   {
     "objectID": "Modeling.html#data-processing",
@@ -60,28 +60,28 @@
     "href": "Modeling.html#data-splitting",
     "title": "Modeling",
     "section": "Data Splitting",
-    "text": "Data Splitting\n\nsplit &lt;- initial_split(data, prop = 0.7, strata = Diabetes_binary)\ntrain_data &lt;- training(split)\ntest_data &lt;- testing(split)"
+    "text": "Data Splitting\nThe data is split into training (70%) and testing (30%) sets, stratified by our response Diabetes_binary\n\nsplit &lt;- initial_split(data, prop = 0.7, strata = Diabetes_binary)\ntrain_data &lt;- training(split)\ntest_data &lt;- testing(split)"
   },
   {
     "objectID": "Modeling.html#metric",
     "href": "Modeling.html#metric",
     "title": "Modeling",
     "section": "Metric",
-    "text": "Metric\n\nlog_loss_metric &lt;- metric_set(mn_log_loss, accuracy)"
+    "text": "Metric\nLog loss is our primary metric. Log loss will penalize based on the confidence of the prediction. Accuracy is also included for interest.\n\nlog_loss_metric &lt;- metric_set(mn_log_loss, accuracy)"
   },
   {
     "objectID": "Modeling.html#cross-validation",
     "href": "Modeling.html#cross-validation",
     "title": "Modeling",
     "section": "Cross Validation",
-    "text": "Cross Validation\n\nfolds &lt;- vfold_cv(train_data, v = 5, strata = Diabetes_binary)"
+    "text": "Cross Validation\nIn cross validation, each fold is used once as a validation set, while the remaining are used for training.\n\nfolds &lt;- vfold_cv(train_data, v = 5, strata = Diabetes_binary)"
   },
   {
     "objectID": "Modeling.html#recipe",
     "href": "Modeling.html#recipe",
     "title": "Modeling",
     "section": "Recipe",
-    "text": "Recipe\n\ntree_recipe &lt;- recipe(Diabetes_binary ~ BMI + Sex + Age + Income + HeartDiseaseorAttack, \n                      data = train_data) |&gt;\n  step_dummy(all_nominal_predictors(), -all_outcomes())\n\n\nprepared_recipe &lt;- prep(tree_recipe)\nbaked &lt;- bake(prepared_recipe, new_data = NULL)\nbaked\n\n# A tibble: 177,575 × 23\n     BMI Diabetes_binary Sex_Male    Age_01  Age_02    Age_03  Age_04    Age_05\n   &lt;dbl&gt; &lt;fct&gt;              &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;\n 1    40 No Diabetes            0  1.48e- 1 -0.223  -2.93e- 1  0.0422  3.31e- 1\n 2    28 No Diabetes            0  1.48e- 1 -0.223  -2.93e- 1  0.0422  3.31e- 1\n 3    30 No Diabetes            0  1.48e- 1 -0.223  -2.93e- 1  0.0422  3.31e- 1\n 4    25 No Diabetes            0  2.96e- 1  0.0447 -2.51e- 1 -0.368  -2.29e- 1\n 5    24 No Diabetes            1  7.41e- 2 -0.291  -1.67e- 1  0.245   2.54e- 1\n 6    34 No Diabetes            0  2.22e- 1 -0.112  -3.34e- 1 -0.207   1.40e- 1\n 7    26 No Diabetes            0 -1.65e-17 -0.313  -2.48e-17  0.322  -6.22e-16\n 8    33 No Diabetes            0 -2.22e- 1 -0.112   3.34e- 1 -0.207  -1.40e- 1\n 9    33 No Diabetes            0 -7.41e- 2 -0.291   1.67e- 1  0.245  -2.54e- 1\n10    28 No Diabetes            1 -2.22e- 1 -0.112   3.34e- 1 -0.207  -1.40e- 1\n# ℹ 177,565 more rows\n# ℹ 15 more variables: Age_06 &lt;dbl&gt;, Age_07 &lt;dbl&gt;, Age_08 &lt;dbl&gt;, Age_09 &lt;dbl&gt;,\n#   Age_10 &lt;dbl&gt;, Age_11 &lt;dbl&gt;, Age_12 &lt;dbl&gt;, Income_1 &lt;dbl&gt;, Income_2 &lt;dbl&gt;,\n#   Income_3 &lt;dbl&gt;, Income_4 &lt;dbl&gt;, Income_5 &lt;dbl&gt;, Income_6 &lt;dbl&gt;,\n#   Income_7 &lt;dbl&gt;, HeartDiseaseorAttack_Yes &lt;dbl&gt;"
+    "text": "Recipe\n\nDefines the predictors and response variable.\nEncodes dummy variables for categorical predictors.\n\n\ntree_recipe &lt;- recipe(Diabetes_binary ~ BMI + Sex + Age + GenHlth + HeartDiseaseorAttack, \n                      data = train_data) |&gt;\n  step_dummy(all_nominal_predictors(), -all_outcomes())\n\nTo verify the dummy variables are created correctly, we prep and bake the recipe.\n\nprepared_recipe &lt;- prep(tree_recipe)\nbaked &lt;- bake(prepared_recipe, new_data = NULL)\nnames(baked)\n\n [1] \"BMI\"                      \"Diabetes_binary\"         \n [3] \"Sex_Male\"                 \"Age_01\"                  \n [5] \"Age_02\"                   \"Age_03\"                  \n [7] \"Age_04\"                   \"Age_05\"                  \n [9] \"Age_06\"                   \"Age_07\"                  \n[11] \"Age_08\"                   \"Age_09\"                  \n[13] \"Age_10\"                   \"Age_11\"                  \n[15] \"Age_12\"                   \"GenHlth_1\"               \n[17] \"GenHlth_2\"                \"GenHlth_3\"               \n[19] \"GenHlth_4\"                \"HeartDiseaseorAttack_Yes\""
   },
   {
     "objectID": "Modeling.html#model",
@@ -102,14 +102,14 @@
     "href": "Modeling.html#tuning",
     "title": "Modeling",
     "section": "Tuning",
-    "text": "Tuning\n\ntree_grid &lt;- grid_regular(cost_complexity(range = c(-6, -2)), \n                          levels = 10)\n\ntree_tuning &lt;- tune_grid(\n  tree_workflow,\n  resamples = folds,\n  grid = tree_grid,\n  metrics = log_loss_metric\n)"
+    "text": "Tuning\nThe cost_complexity parameter is tuned to find the best model. A larger value of cost_complexity, the simpler the tree.\n\ntree_grid &lt;- grid_regular(cost_complexity(range = c(-6, -2)), \n                          levels = 10)\n\ntree_tuning &lt;- tune_grid(\n  tree_workflow,\n  resamples = folds,\n  grid = tree_grid,\n  metrics = log_loss_metric\n)"
   },
   {
     "objectID": "Modeling.html#best-model",
     "href": "Modeling.html#best-model",
     "title": "Modeling",
     "section": "Best Model",
-    "text": "Best Model\n\nbest_tree &lt;- tree_tuning |&gt;\n  select_best(metric = \"mn_log_loss\")\nbest_tree\n\n# A tibble: 1 × 2\n  cost_complexity .config              \n            &lt;dbl&gt; &lt;chr&gt;                \n1        0.000001 Preprocessor1_Model01\n\nfinal_tree_workflow &lt;- finalize_workflow(tree_workflow, best_tree)\n\nfinal_tree_model &lt;- fit(final_tree_workflow, data = train_data)"
+    "text": "Best Model\nThe best tree model is selected based on log_loss during CV and then fit to the full training set\n\nbest_tree &lt;- tree_tuning |&gt;\n  select_best(metric = \"mn_log_loss\")\nbest_tree\n\n# A tibble: 1 × 2\n  cost_complexity .config              \n            &lt;dbl&gt; &lt;chr&gt;                \n1        0.000001 Preprocessor1_Model01\n\nfinal_tree_workflow &lt;- finalize_workflow(tree_workflow, best_tree)\n\nfinal_tree_model &lt;- fit(final_tree_workflow, data = train_data)"
   },
   {
     "objectID": "Modeling.html#recipe-1",
@@ -123,7 +123,7 @@
     "href": "Modeling.html#model-1",
     "title": "Modeling",
     "section": "Model",
-    "text": "Model\n\nrf_model &lt;- rand_forest(mtry = tune(), trees = 500) |&gt;\n  set_engine(\"ranger\") |&gt;\n  set_mode(\"classification\")"
+    "text": "Model\n\nrf_model &lt;- rand_forest(mtry = tune(), trees = 1000) |&gt;\n  set_engine(\"ranger\") |&gt;\n  set_mode(\"classification\")"
   },
   {
     "objectID": "Modeling.html#workflow-1",
@@ -137,20 +137,62 @@
     "href": "Modeling.html#tuning-1",
     "title": "Modeling",
     "section": "Tuning",
-    "text": "Tuning\n\nrf_grid &lt;- grid_regular(mtry(range = c(1, 5)), levels = 5)\n\nrf_tuning &lt;- tune_grid(\n  rf_workflow,\n  resamples = folds,\n  grid = rf_grid,\n  metrics = log_loss_metric\n)"
+    "text": "Tuning\nThe mtry parameter is tuned, testing a range of predictors sampled at each split.\n\nrf_grid &lt;- grid_regular(mtry(range = c(1, 5)), levels = 5)\n\nrf_tuning &lt;- tune_grid(\n  rf_workflow,\n  resamples = folds,\n  grid = rf_grid,\n  metrics = log_loss_metric\n)"
   },
   {
     "objectID": "Modeling.html#best-model-1",
     "href": "Modeling.html#best-model-1",
     "title": "Modeling",
     "section": "Best Model",
-    "text": "Best Model\n\nbest_rf &lt;- rf_tuning |&gt;\n  select_best(metric = \"mn_log_loss\")\nbest_rf\n\n# A tibble: 1 × 2\n   mtry .config             \n  &lt;int&gt; &lt;chr&gt;               \n1     5 Preprocessor1_Model5\n\nfinal_rf_workflow &lt;- finalize_workflow(rf_workflow, best_rf)\n\nfinal_rf_model &lt;- fit(final_rf_workflow, data = train_data)"
+    "text": "Best Model\nThe best random forest model is selected based on log_loss during CV and then fit to the full training set\n\nbest_rf &lt;- rf_tuning |&gt;\n  select_best(metric = \"mn_log_loss\")\nbest_rf\n\n# A tibble: 1 × 2\n   mtry .config             \n  &lt;int&gt; &lt;chr&gt;               \n1     5 Preprocessor1_Model5\n\nfinal_rf_workflow &lt;- finalize_workflow(rf_workflow, best_rf)\n\nfinal_rf_model &lt;- fit(final_rf_workflow, data = train_data)"
   },
   {
     "objectID": "Modeling.html#tuning-results-visualization",
     "href": "Modeling.html#tuning-results-visualization",
     "title": "Modeling",
     "section": "Tuning Results Visualization",
-    "text": "Tuning Results Visualization\n\ntree_results &lt;- collect_metrics(tree_tuning)\nrf_results &lt;- collect_metrics(rf_tuning)\n\nbind_rows(\n  tree_results |&gt; mutate(model = \"Tree\"),\n  rf_results |&gt; mutate(model = \"Random Forest\")\n) |&gt; \n  ggplot(aes(x = .metric, y = mean, color = model)) +\n  geom_point(position = position_dodge(0.3)) +\n  geom_errorbar(aes(ymin = mean - std_err, ymax = mean + std_err), position = position_dodge(0.3)) +\n  facet_wrap(~.metric, scales = \"free_y\") +\n  labs(\n    title = \"Comparison of Model Metrics\",\n    x = \"Metric\",\n    y = \"Mean Value\"\n  ) +\n  theme_minimal()"
+    "text": "Tuning Results Visualization\n\ntree_results &lt;- collect_metrics(tree_tuning)\n\ntree_plot &lt;- tree_results |&gt; \n  ggplot(aes(x = cost_complexity, y = mean)) +\n  geom_point(size = 3, aes(color = .metric)) +\n  geom_line(aes(color = .metric)) +\n  geom_errorbar(\n    aes(ymin = mean - std_err, \n        ymax = mean + std_err, \n        color = .metric),\n    width = 0.2\n  ) +\n  scale_x_log10() +  \n  facet_wrap(~ .metric, scales = \"free_y\") +\n  labs(\n    title = \"Tuning Metrics for Decision Tree\",\n    x = \"Cost Complexity\",\n    y = \"Mean Metric Value\"\n  ) +\n  theme_minimal() +\n  theme(\n    legend.position = \"none\",\n    axis.text.x = element_text(angle = 45, hjust = 1)\n  )\n\nprint(tree_plot)"
+  },
+  {
+    "objectID": "Modeling.html#tuning-results-visualization-1",
+    "href": "Modeling.html#tuning-results-visualization-1",
+    "title": "Modeling",
+    "section": "Tuning Results Visualization",
+    "text": "Tuning Results Visualization\n\nrf_results &lt;- collect_metrics(rf_tuning)\n\n# Random Forest Plot\nrf_plot &lt;- rf_results |&gt; \n  ggplot(aes(x = mtry, y = mean)) +\n  geom_point(size = 3, aes(color = .metric)) +\n  geom_line(aes(color = .metric)) +\n  geom_errorbar(\n    aes(ymin = mean - std_err, \n        ymax = mean + std_err, \n        color = .metric),\n    width = 0.2\n  ) +\n  facet_wrap(~ .metric, scales = \"free_y\") + \n  labs(\n    title = \"Tuning Metrics for Random Forest\",\n    x = \"Number of Predictors Sampled (mtry)\",\n    y = \"Mean Metric Value\"\n  ) +\n  theme_minimal() +\n  theme(\n    legend.position = \"none\", \n    axis.text.x = element_text(angle = 45, hjust = 1)\n  )\n\nprint(rf_plot)"
+  },
+  {
+    "objectID": "EDA.html#numeric-summaries",
+    "href": "EDA.html#numeric-summaries",
+    "title": "EDA",
+    "section": "Numeric Summaries",
+    "text": "Numeric Summaries\n\nnumeric_cols &lt;- names(data)[sapply(data, is.numeric)]\n\nnumeric_summaries &lt;- lapply(data[numeric_cols], summary)\nnumeric_summaries\n\n$BMI\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  12.00   24.00   27.00   28.38   31.00   98.00 \n\n$MentHlth\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  0.000   0.000   0.000   3.185   2.000  30.000 \n\n$PhysHlth\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n  0.000   0.000   0.000   4.242   3.000  30.000"
+  },
+  {
+    "objectID": "EDA.html#boxplots",
+    "href": "EDA.html#boxplots",
+    "title": "EDA",
+    "section": "Boxplots",
+    "text": "Boxplots\n\nFaceting across numeric variables to compare between diabetes status.\n\n\nlong_data &lt;- data %&gt;%\n  select(Diabetes_binary, all_of(numeric_cols)) %&gt;%\n  pivot_longer(cols = all_of(numeric_cols), \n               names_to = \"Variable\", \n               values_to = \"Value\")\n\nggplot(long_data, aes(x = Diabetes_binary, \n                      y = Value, \n                      fill = Diabetes_binary)) +\n  geom_boxplot() +\n  facet_wrap(~Variable, scales = \"free_y\") +\n  labs(\n    title = \"Boxplots of Numeric Variables Grouped by Diabetes Status\",\n    x = \"Diabetes Status\",\n    y = \"Value\"\n  ) +\n  theme_minimal() +\n  theme(legend.position = \"none\")"
+  },
+  {
+    "objectID": "EDA.html#correlation-matrix",
+    "href": "EDA.html#correlation-matrix",
+    "title": "EDA",
+    "section": "Correlation Matrix",
+    "text": "Correlation Matrix\n\nCheck for relationships between numeric variables\n\n\nnumeric_vars &lt;- data %&gt;%\n  select(all_of(numeric_cols))\n\ncorrelation_matrix &lt;- cor(numeric_vars, use = \"complete.obs\")\ncorrelation_matrix\n\n                BMI   MentHlth  PhysHlth\nBMI      1.00000000 0.08531016 0.1211411\nMentHlth 0.08531016 1.00000000 0.3536189\nPhysHlth 0.12114111 0.35361887 1.0000000"
+  },
+  {
+    "objectID": "EDA.html#data",
+    "href": "EDA.html#data",
+    "title": "EDA",
+    "section": "Data",
+    "text": "Data\nFrom Kaggle: “diabetes _ binary _ health _ indicators _ BRFSS2015.csv is a clean dataset of 253,680 survey responses to the CDC’s BRFSS2015. The target variable Diabetes_binary has 2 classes. 0 is for no diabetes, and 1 is for prediabetes or diabetes. This dataset has 21 feature variables and is not balanced.”\nLink to data homepage on Kaggle\n\ndata &lt;- read.csv(\"diabetes_binary_health_indicators_BRFSS2015.csv\")\nglimpse(data)\n\nRows: 253,680\nColumns: 22\n$ Diabetes_binary      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0…\n$ HighBP               &lt;dbl&gt; 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1…\n$ HighChol             &lt;dbl&gt; 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1…\n$ CholCheck            &lt;dbl&gt; 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…\n$ BMI                  &lt;dbl&gt; 40, 25, 28, 27, 24, 25, 30, 25, 30, 24, 25, 34, 2…\n$ Smoker               &lt;dbl&gt; 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0…\n$ Stroke               &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0…\n$ HeartDiseaseorAttack &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0…\n$ PhysActivity         &lt;dbl&gt; 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1…\n$ Fruits               &lt;dbl&gt; 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1…\n$ Veggies              &lt;dbl&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1…\n$ HvyAlcoholConsump    &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…\n$ AnyHealthcare        &lt;dbl&gt; 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…\n$ NoDocbcCost          &lt;dbl&gt; 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0…\n$ GenHlth              &lt;dbl&gt; 5, 3, 5, 2, 2, 2, 3, 3, 5, 2, 3, 3, 3, 4, 4, 2, 3…\n$ MentHlth             &lt;dbl&gt; 18, 0, 30, 0, 3, 0, 0, 0, 30, 0, 0, 0, 0, 0, 30, …\n$ PhysHlth             &lt;dbl&gt; 15, 0, 30, 0, 0, 2, 14, 0, 30, 0, 0, 30, 15, 0, 2…\n$ DiffWalk             &lt;dbl&gt; 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0…\n$ Sex                  &lt;dbl&gt; 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0…\n$ Age                  &lt;dbl&gt; 9, 7, 9, 11, 11, 10, 9, 11, 9, 8, 13, 10, 7, 11, …\n$ Education            &lt;dbl&gt; 4, 6, 4, 3, 5, 6, 6, 4, 5, 4, 6, 5, 5, 4, 6, 6, 4…\n$ Income               &lt;dbl&gt; 3, 1, 8, 6, 4, 8, 7, 4, 1, 3, 8, 1, 7, 6, 2, 8, 3…\n\n\nNote: “MentHlth” and “PhysHlth” are counts of days"
+  },
+  {
+    "objectID": "Modeling.html#data",
+    "href": "Modeling.html#data",
+    "title": "Modeling",
+    "section": "Data",
+    "text": "Data\nRead in the data processed in our EDA\n\ndata &lt;- readRDS(\"processed_data.rds\")"
   }
 ]

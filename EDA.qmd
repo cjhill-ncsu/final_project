@@ -10,24 +10,41 @@ editor: visual
 ---
 
 ```{r}
+#| message: false
+#| warning: false
+
 library(tidyverse)
 library(ggpubr)
 ```
 
 # Introduction
 
+The goal of this exploratory data analysis (EDA) is to:
 
+- Understand the structure and characteristics of the dataset.
 
-# Data
+- Prepare the data for predictive modeling by ensuring it is clean, complete, and appropriately typed
+
+- Identify patterns, relationships, and potential predictors of diabetes.
+
+## Data
+
+From Kaggle: *"diabetes _ binary _ health _ indicators _ BRFSS2015.csv is a clean dataset of 253,680 survey responses to the CDC's BRFSS2015. The target variable Diabetes_binary has 2 classes. 0 is for no diabetes, and 1 is for prediabetes or diabetes. This dataset has 21 feature variables and is not balanced."*
+
+[Link to data homepage on Kaggle](https://www.kaggle.com/datasets/alexteboul/diabetes-health-indicators-dataset/)
 
 ```{r}
 data <- read.csv("diabetes_binary_health_indicators_BRFSS2015.csv")
-str(data)
+glimpse(data)
 ```
 
 ## Factor Conversions
 
-Note: "MentHlth" and "PhysHlth" are counts of days
+- Binary variables are converted into factor levels "Yes" and "No.". Sex was given the labels "Male" and "Female"
+
+- Variables GenHlth, Age, Education, and Income are ordered factors.
+
+- The Diabetes_binary response variable was converted into a factor of "No Diabetes" and "Prediabetes."
 
 ```{r}
 data$Diabetes_binary <- factor(data$Diabetes_binary, 
@@ -72,7 +89,7 @@ data$Education <- factor(data$Education,
                          labels = education_levels, 
                          ordered = TRUE)
 
-income_levels <- c("Less than $10,000", 
+income_levels <- c("Less than $10000", 
                    "$10,000 to $15,000", 
                    "$15,000 to $20,000", 
                    "$20,000 to $25,000", 
@@ -90,6 +107,8 @@ str(data)
 
 ## Response Variable
 
+- Dropping unused factor level in Diabetes_binary
+
 ```{r}
 table(data$Diabetes_binary)
 data$Diabetes_binary <- droplevels(data$Diabetes_binary)
@@ -98,13 +117,17 @@ table(data$Diabetes_binary)
 
 ## Missingness
 
+There are no missing values.
+
 ```{r}
 colSums(is.na(data))
 ```
 
 # Summarizations
 
-## Numeric Variables
+## Numeric Summaries
+
+Note: "MentHlth" and "PhysHlth" are counts of days in the past month
 
 ```{r}
 numeric_cols <- names(data)[sapply(data, is.numeric)]
@@ -113,7 +136,9 @@ numeric_summaries <- lapply(data[numeric_cols], summary)
 numeric_summaries
 ```
 
-### Boxplots
+## Boxplots
+
+- Faceting across numeric variables to compare between diabetes status.
 
 ```{r}
 long_data <- data %>%
@@ -137,7 +162,9 @@ ggplot(long_data, aes(x = Diabetes_binary,
 
 ```
 
-### Correlation Matrix
+## Correlation Matrix
+
+- Check for relationships between numeric variables
 
 ```{r}
 numeric_vars <- data %>%
@@ -147,14 +174,15 @@ correlation_matrix <- cor(numeric_vars, use = "complete.obs")
 correlation_matrix
 ```
 
-
 ## Categorical Variables
+
+Stacked bars with proportional fills. This makes it easy to compare the prevalence of diabetes status across different levels of each category.
 
 ### Binary
 
 ```{r}
 bin_plots <- lapply(binary_vars, function(var) {
-  ggplot(data, aes_string(x = var, fill = "Diabetes_binary")) +
+  ggplot(data, aes(x = .data[[var]], fill = Diabetes_binary)) +
     geom_bar(position = "fill") +
     labs(
       x = var,
@@ -179,10 +207,10 @@ ggarrange(
 ordered_vars <- names(data)[sapply(data, is.ordered)]
 
 ord_plots <- lapply(ordered_vars, function(var) {
-  ggplot(data, aes_string(x = var, fill = "Diabetes_binary")) +
+  ggplot(data, aes(x = .data[[var]], fill = Diabetes_binary)) +
     geom_bar(position = "fill") +
     labs(
-      title = paste(var),
+      title = var,
       x = var,
       y = ""
     ) +
@@ -201,17 +229,10 @@ ggarrange(
 
 # Save Processed Data
 
+- Save the processed data to be be used for modeling and our API. See the Modeling process through the link below.
+
 ```{r}
 saveRDS(data, "processed_data.rds")
 ```
-
-
-
-
-
-
-
-
-
 
 [Click here for the Modeling Page](Modeling.html)

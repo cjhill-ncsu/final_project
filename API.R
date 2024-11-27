@@ -11,13 +11,13 @@ final_rf_model <- readRDS("final_rf_model.rds")
 #* @param BMI Numeric. Body Mass Index. Default: 28
 #* @param Sex Factor. Default: "Female"
 #* @param Age Factor. Default: "70-74"
-#* @param Income Factor. Default: "$10,000 to $15,000"
+#* @param GenHlth Factor. Default: "Very Good"
 #* @param HeartDiseaseorAttack Factor. Default: "No" 
 #* @post /pred
 function(BMI = 28, 
          Sex = "Female", 
          Age = "70-74", 
-         Income = "$10,000 to $15,000", 
+         GenHlth = "Very Good", 
          HeartDiseaseorAttack = "No") {
   
   input_data <- data.frame(
@@ -26,17 +26,17 @@ function(BMI = 28,
                  levels = levels(data$Sex)),
     Age = factor(Age, 
                  levels = levels(data$Age), 
-                 ordered = is.ordered(data$Age)),  # Ensure ordered factor
-    Income = factor(Income, 
-                    levels = levels(data$Income),
-                    ordered = is.ordered(data$Income)),
+                 ordered = is.ordered(data$Age)),
+    GenHlth = factor(GenHlth, 
+                     levels = levels(data$GenHlth),
+                     ordered = is.ordered(data$GenHlth)),
     HeartDiseaseorAttack = factor(HeartDiseaseorAttack, 
                                   levels = levels(data$HeartDiseaseorAttack))
   )
   
   predict(final_rf_model, new_data = input_data, type = "prob")
 }
-#Query with: http://127.0.0.1:8000/pred?BMI=28&Sex=Female&Age=70-74&Income=%2410%2C000%20to%20%2415%2C000&HeartDiseaseorAttack=No
+#Query with: 
 
 
 #* Plot the confusion matrix

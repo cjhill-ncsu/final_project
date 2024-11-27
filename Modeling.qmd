@@ -11,6 +11,8 @@ editor: visual
 
 ```{r}
 #| label: setup
+#| message: false
+#| warning: false
 
 library(tidymodels)
 library(doFuture)
@@ -23,9 +25,27 @@ set.seed(123)
 
 # Introduction
 
+The goal is to predict Diabetes status using the predictors described below. Two models will be tuned and compared, Regression Tree and Random Forest. Which ever model performs best using the log loss metric will be used in an API.
 
+For this analysis, we focus on the following key variables:
 
-## Data Processing
+- Response Variable: Diabetes_binary (No Diabetes, Prediabetes, Diabetes), indicating an individual's diabetes status.
+
+Predictors:
+
+- BMI (Body Mass Index): Numeric variable representing an individual's weight-to-height ratio.
+
+- Sex: Binary categorical variable indicating gender (Female, Male).
+
+- Age: Ordered factor capturing age groups from "18-24" to "80 or older."
+
+- GenHlth (General Health): Ordered factor ranging from "Excellent" to "Poor."
+
+- HeartDiseaseorAttack: Binary indicator of previous heart disease or heart attack (Yes, No).
+
+## Data
+
+Read in the data processed in our [EDA](EDA.html)
 
 ```{r}
 #| label: data-processing
@@ -34,6 +54,8 @@ data <- readRDS("processed_data.rds")
 ```
 
 ## Data Splitting
+
+The data is split into training (70%) and testing (30%) sets, stratified by our response Diabetes_binary
 
 ```{r}
 #| label: data-split
@@ -45,6 +67,8 @@ test_data <- testing(split)
 
 ## Metric
 
+Log loss is our primary metric. Log loss will penalize based on the confidence of the prediction. Accuracy is also included for interest.
+
 ```{r}
 #| label: metric
 
@@ -52,6 +76,8 @@ log_loss_metric <- metric_set(mn_log_loss, accuracy)
 ```
 
 ## Cross Validation
+
+In cross validation, each fold is used once as a validation set, while the remaining are used for training.
 
 ```{r}
 #| label: cross-validation
@@ -63,20 +89,26 @@ folds <- vfold_cv(train_data, v = 5, strata = Diabetes_binary)
 
 ## Recipe
 
+- Defines the predictors and response variable.
+
+- Encodes dummy variables for categorical predictors.
+
 ```{r}
 #| label: tree-recipe
 
-tree_recipe <- recipe(Diabetes_binary ~ BMI + Sex + Age + Income + HeartDiseaseorAttack, 
+tree_recipe <- recipe(Diabetes_binary ~ BMI + Sex + Age + GenHlth + HeartDiseaseorAttack, 
                       data = train_data) |>
   step_dummy(all_nominal_predictors(), -all_outcomes())
 ```
+
+To verify the dummy variables are created correctly, we prep and bake the recipe.
 
 ```{r}
 #| label: tree-prep
 
 prepared_recipe <- prep(tree_recipe)
 baked <- bake(prepared_recipe, new_data = NULL)
-baked
+names(baked)
 ```
 
 ## Model
@@ -101,6 +133,8 @@ tree_workflow <- workflow() |>
 
 ## Tuning
 
+The cost_complexity parameter is tuned to find the best model. A larger value of cost_complexity, the simpler the tree. 
+
 ```{r}
 #| label: tree-tuning
 #| cache: true
@@ -117,7 +151,42 @@ tree_tuning <- tune_grid(
 )
 ```
 
+## Tuning Results Visualization
+
+```{r}
+#| label: tree-tuning-results
+
+tree_results <- collect_metrics(tree_tuning)
+
+tree_plot <- tree_results |> 
+  ggplot(aes(x = cost_complexity, y = mean)) +
+  geom_point(size = 3, aes(color = .metric)) +
+  geom_line(aes(color = .metric)) +
+  geom_errorbar(
+    aes(ymin = mean - std_err, 
+        ymax = mean + std_err, 
+        color = .metric),
+    width = 0.2
+  ) +
+  scale_x_log10() +  
+  facet_wrap(~ .metric, scales = "free_y") +
+  labs(
+    title = "Tuning Metrics for Decision Tree",
+    x = "Cost Complexity",
+    y = "Mean Metric Value"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+print(tree_plot)
+```
+
 ## Best Model
+
+The best tree model is selected based on log_loss during CV and then fit to the full training set
 
 ```{r}
 #| label: best-tree
@@ -144,7 +213,7 @@ Same as the classification tree.
 ```{r}
 #| label: rf-model
 
-rf_model <- rand_forest(mtry = tune(), trees = 500) |>
+rf_model <- rand_forest(mtry = tune(), trees = 1000) |>
   set_engine("ranger") |>
   set_mode("classification")
 ```
@@ -160,6 +229,8 @@ rf_workflow <- workflow() |>
 ```
 
 ## Tuning
+
+The mtry parameter is tuned, testing a range of predictors sampled at each split.
 
 ```{r}
 #| label: rf-tuning
@@ -178,6 +249,8 @@ rf_tuning <- tune_grid(
 
 ## Best Model
 
+The best random forest model is selected based on log_loss during CV and then fit to the full training set
+
 ```{r}
 #| label: best-rf
 #| cache: true
@@ -195,28 +268,39 @@ final_rf_model <- fit(final_rf_workflow, data = train_data)
 ## Tuning Results Visualization
 
 ```{r}
-#| label: tuning-results
+#| label: rf-tuning-results
 
-tree_results <- collect_metrics(tree_tuning)
 rf_results <- collect_metrics(rf_tuning)
 
-bind_rows(
-  tree_results |> mutate(model = "Tree"),
-  rf_results |> mutate(model = "Random Forest")
-) |> 
-  ggplot(aes(x = .metric, y = mean, color = model)) +
-  geom_point(position = position_dodge(0.3)) +
-  geom_errorbar(aes(ymin = mean - std_err, ymax = mean + std_err), position = position_dodge(0.3)) +
-  facet_wrap(~.metric, scales = "free_y") +
-  labs(
-    title = "Comparison of Model Metrics",
-    x = "Metric",
-    y = "Mean Value"
+# Random Forest Plot
+rf_plot <- rf_results |> 
+  ggplot(aes(x = mtry, y = mean)) +
+  geom_point(size = 3, aes(color = .metric)) +
+  geom_line(aes(color = .metric)) +
+  geom_errorbar(
+    aes(ymin = mean - std_err, 
+        ymax = mean + std_err, 
+        color = .metric),
+    width = 0.2
   ) +
-  theme_minimal()
+  facet_wrap(~ .metric, scales = "free_y") + 
+  labs(
+    title = "Tuning Metrics for Random Forest",
+    x = "Number of Predictors Sampled (mtry)",
+    y = "Mean Metric Value"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none", 
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+print(rf_plot)
 ```
 
 # Model Comparison
+
+Both the best classification tree and random forest models are evaluated on the test set.
 
 ```{r}
 #| label: model-comparison
@@ -238,6 +322,10 @@ list(
 ```
 
 # Fit Best Model to Entire Dataset
+
+The best model is chosen using the log loss metric and fit to the full dataset.
+
+The full model is then saved for use in the API.
 
 ```{r}
 #| label: fit-full

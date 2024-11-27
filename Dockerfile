@@ -4,11 +4,12 @@ FROM rocker/r-ver:4.3.1
 # Install system libraries required by R packages
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
+    libpng-dev \
     libssl-dev \
     libxml2-dev \
-    libv8-dev \
     pandoc \
     && apt-get clean
+
 
 # Install plumber and other R packages
 RUN install2.r --error \
