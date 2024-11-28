@@ -13,7 +13,7 @@ final_rf_model <- readRDS("final_rf_model.rds")
 #* @param Age Factor. Default: "70-74"
 #* @param GenHlth Factor. Default: "Very Good"
 #* @param HeartDiseaseorAttack Factor. Default: "No" 
-#* @post /pred
+#* @get /pred
 function(BMI = 28, 
          Sex = "Female", 
          Age = "70-74", 
@@ -37,6 +37,12 @@ function(BMI = 28,
   predict(final_rf_model, new_data = input_data, type = "prob")
 }
 #Query with: 
+#
+# http://127.0.0.1:8000/pred?BMI=28&Sex=Female&Age=70-74&GenHlth=Very%20Good&HeartDiseaseorAttack=No
+#
+# http://127.0.0.1:8000/pred?BMI=50&Sex=Male&Age=70-74&GenHlth=Poor&HeartDiseaseorAttack=Yes
+#
+# http://127.0.0.1:8000/pred?BMI=50&Sex=Female&Age=60-64&GenHlth=Fair&HeartDiseaseorAttack=No
 
 
 #* Plot the confusion matrix

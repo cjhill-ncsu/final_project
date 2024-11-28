@@ -210,7 +210,6 @@ ord_plots <- lapply(ordered_vars, function(var) {
   ggplot(data, aes(x = .data[[var]], fill = Diabetes_binary)) +
     geom_bar(position = "fill") +
     labs(
-      title = var,
       x = var,
       y = ""
     ) +
